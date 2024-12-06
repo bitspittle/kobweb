@@ -11,6 +11,8 @@ import org.jetbrains.compose.web.dom.H1
 import org.jetbrains.compose.web.dom.Text
 import playground.components.sections.NavHeader
 
+val x = playground.temp.test()
+
 @Composable
 fun PageLayout(title: String, content: @Composable () -> Unit) {
     LaunchedEffect(title) {

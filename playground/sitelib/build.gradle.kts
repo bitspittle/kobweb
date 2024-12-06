@@ -25,6 +25,7 @@ kotlin {
             implementation("com.varabyte.kobweb:kobweb-core")
             implementation("com.varabyte.kobweb:kobweb-silk")
             implementation("com.varabyte.kobwebx:silk-icons-fa")
+            implementation(project(":temp"))
         }
         jvmMain.dependencies {
             implementation("com.varabyte.kobweb:kobweb-api")
