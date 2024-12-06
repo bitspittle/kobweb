@@ -1,9 +1,6 @@
 package com.varabyte.kobweb.gradle.application.tasks
 
-import com.varabyte.kobweb.gradle.core.util.searchZipFor
-import com.varabyte.kobweb.ksp.KOBWEB_METADATA_FRONTEND
 import com.varabyte.kobweb.project.frontend.AppData
-import com.varabyte.kobweb.project.frontend.FrontendData
 import com.varabyte.kobweb.project.frontend.merge
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -60,11 +57,11 @@ abstract class KobwebCacheAppDataTask : DefaultTask() {
         val appData = Json.decodeFromString<AppData>(appFrontendMetadataFile.get().asFile.readText())
         val mergedFrontendData = buildList {
             add(appData.frontendData)
-            compileClasspath.forEach { file ->
-                file.searchZipFor(KOBWEB_METADATA_FRONTEND) { bytes ->
-                    add(Json.decodeFromString<FrontendData>(bytes.decodeToString()))
-                }
-            }
+//            compileClasspath.forEach { file ->
+//                file.searchZipFor(KOBWEB_METADATA_FRONTEND) { bytes ->
+//                    add(Json.decodeFromString<FrontendData>(bytes.decodeToString()))
+//                }
+//            }
         }
             .merge(throwError = { throw GradleException(it) })
 

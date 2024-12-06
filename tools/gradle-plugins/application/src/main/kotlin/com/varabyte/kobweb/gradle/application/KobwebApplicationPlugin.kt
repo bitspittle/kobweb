@@ -6,7 +6,6 @@ import com.varabyte.kobweb.gradle.application.extensions.AppBlock
 import com.varabyte.kobweb.gradle.application.extensions.app
 import com.varabyte.kobweb.gradle.application.extensions.createAppBlock
 import com.varabyte.kobweb.gradle.application.extensions.export
-import com.varabyte.kobweb.gradle.application.extensions.index
 import com.varabyte.kobweb.gradle.application.extensions.remoteDebugging
 import com.varabyte.kobweb.gradle.application.extensions.server
 import com.varabyte.kobweb.gradle.application.ksp.kspBackendFile
@@ -60,13 +59,10 @@ import org.gradle.api.file.RegularFile
 import org.gradle.api.tasks.Sync
 import org.gradle.build.event.BuildEventsListenerRegistry
 import org.gradle.kotlin.dsl.extra
-import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import org.gradle.language.jvm.tasks.ProcessResources
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.plugin.attributes.KlibPackaging
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
@@ -246,14 +242,14 @@ class KobwebApplicationPlugin @Inject constructor(
             // This is intended as a temporary workaround until we find a way to make unpacked klibs compatible with
             // kobweb libraries.
             // See also: https://youtrack.jetbrains.com/issue/KT-65285/Use-uncompressed-Klibs
-            @OptIn(ExperimentalKotlinGradlePluginApi::class)
-            run {
-                listOf(jsTarget.compileClasspath, jsTarget.runtimeClasspath).forEach { configurationName ->
-                    project.configurations.named(configurationName).configure {
-                        attributes.attribute(KlibPackaging.ATTRIBUTE, project.objects.named(KlibPackaging.PACKED))
-                    }
-                }
-            }
+//            @OptIn(ExperimentalKotlinGradlePluginApi::class)
+//            run {
+//                listOf(jsTarget.compileClasspath, jsTarget.runtimeClasspath).forEach { configurationName ->
+//                    project.configurations.named(configurationName).configure {
+//                        attributes.attribute(KlibPackaging.ATTRIBUTE, project.objects.named(KlibPackaging.PACKED))
+//                    }
+//                }
+//            }
 
             project.setupKspJs(jsTarget, appBlock.cssPrefix)
 

@@ -5,19 +5,10 @@ import com.varabyte.kobweb.gradle.application.BuildTarget
 import com.varabyte.kobweb.gradle.application.extensions.AppBlock
 import com.varabyte.kobweb.gradle.application.extensions.index
 import com.varabyte.kobweb.gradle.application.templates.createIndexFile
-import com.varabyte.kobweb.gradle.core.metadata.LibraryMetadata
 import com.varabyte.kobweb.gradle.core.util.HtmlUtil
 import com.varabyte.kobweb.gradle.core.util.hasDependencyNamed
-import com.varabyte.kobweb.gradle.core.util.searchZipFor
-import com.varabyte.kobweb.ksp.KOBWEB_METADATA_LIBRARY
 import com.varabyte.kobweb.project.conf.KobwebConf
-import kotlinx.html.dom.append
-import kotlinx.html.dom.document
-import kotlinx.html.dom.serialize
-import kotlinx.html.head
 import kotlinx.html.link
-import kotlinx.html.unsafe
-import kotlinx.serialization.json.Json
 import org.gradle.api.artifacts.result.ResolvedDependencyResult
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.RegularFile
@@ -30,7 +21,6 @@ import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.jetbrains.kotlin.util.prefixIfNot
-import org.jsoup.Jsoup
 import javax.inject.Inject
 
 class KobwebGenIndexConfInputs(
@@ -96,48 +86,48 @@ abstract class KobwebGenerateSiteIndexTask @Inject constructor(
             })
         }
 
-        compileClasspath.forEach { file ->
-            var libraryMetadata: LibraryMetadata? = null
-
-            file.searchZipFor(KOBWEB_METADATA_LIBRARY) { bytes ->
-                libraryMetadata = Json.decodeFromString(LibraryMetadata.serializer(), bytes.decodeToString())
-            }
-
-            libraryMetadata?.index?.headElements?.let { headElementsStr ->
-                if (headElementsStr.isBlank()) {
-                    return@forEach
-                }
-                // There doesn't seem to be a better way to pretty print the <head> contents using kotlinx.html
-                val headPrettyPrint = document {
-                    append.head { unsafe { raw(headElementsStr) } }
-                }.serialize().lines().drop(3).dropLast(2).joinToString("\n").trimIndent()
-
-                val optedOut = indexBlock.excludeHtmlForDependencies.get().any { file.name.startsWith(it) }
-                if (!optedOut) {
-                    if (indexBlock.suppressHtmlWarningsForDependencies.get()
-                            .none { file.name.startsWith(it) }
-                    ) {
-                        val dep = file.nameWithoutExtension.substringBeforeLast("-js-")
-                        logger.warn(buildString {
-                            appendLine()
-                            appendLine("Dependency artifact \"${file.name}\" will add the following <head> elements to your site's index.html:")
-                            appendLine(headPrettyPrint)
-                            appendLine("You likely want to let them do this, as it is probably necessary for the library's functionality, but you should still audit what they're doing.")
-                            append(
-                                "Add `kobweb { app { index { excludeHtmlForDependencies.add(\"$dep\") } } }` to your build.gradle.kts file to reject these elements (or `suppressHtmlWarningsForDependencies.add(\"$dep\")` to hide this message)."
-                            )
-                        })
-                    }
-                    headElements.add(headElementsStr)
-                } else {
-                    logger.warn(buildString {
-                        appendLine()
-                        appendLine("Dependency artifact \"${file.name}\" was prevented from adding the following <head> elements to your site's index.html:")
-                        append(headPrettyPrint)
-                    })
-                }
-            }
-        }
+//        compileClasspath.forEach { file ->
+//            var libraryMetadata: LibraryMetadata? = null
+//
+//            file.searchZipFor(KOBWEB_METADATA_LIBRARY) { bytes ->
+//                libraryMetadata = Json.decodeFromString(LibraryMetadata.serializer(), bytes.decodeToString())
+//            }
+//
+//            libraryMetadata?.index?.headElements?.let { headElementsStr ->
+//                if (headElementsStr.isBlank()) {
+//                    return@forEach
+//                }
+//                // There doesn't seem to be a better way to pretty print the <head> contents using kotlinx.html
+//                val headPrettyPrint = document {
+//                    append.head { unsafe { raw(headElementsStr) } }
+//                }.serialize().lines().drop(3).dropLast(2).joinToString("\n").trimIndent()
+//
+//                val optedOut = indexBlock.excludeHtmlForDependencies.get().any { file.name.startsWith(it) }
+//                if (!optedOut) {
+//                    if (indexBlock.suppressHtmlWarningsForDependencies.get()
+//                            .none { file.name.startsWith(it) }
+//                    ) {
+//                        val dep = file.nameWithoutExtension.substringBeforeLast("-js-")
+//                        logger.warn(buildString {
+//                            appendLine()
+//                            appendLine("Dependency artifact \"${file.name}\" will add the following <head> elements to your site's index.html:")
+//                            appendLine(headPrettyPrint)
+//                            appendLine("You likely want to let them do this, as it is probably necessary for the library's functionality, but you should still audit what they're doing.")
+//                            append(
+//                                "Add `kobweb { app { index { excludeHtmlForDependencies.add(\"$dep\") } } }` to your build.gradle.kts file to reject these elements (or `suppressHtmlWarningsForDependencies.add(\"$dep\")` to hide this message)."
+//                            )
+//                        })
+//                    }
+//                    headElements.add(headElementsStr)
+//                } else {
+//                    logger.warn(buildString {
+//                        appendLine()
+//                        appendLine("Dependency artifact \"${file.name}\" was prevented from adding the following <head> elements to your site's index.html:")
+//                        append(headPrettyPrint)
+//                    })
+//                }
+//            }
+//        }
 
         val basePath = BasePath(confInputs.basePath)
         getGenIndexFile().get().asFile.writeText(
