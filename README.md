@@ -5724,9 +5724,15 @@ However, there's always more to do.
 * There are still a handful of widgets planned to be added.
 * A lot of detailed documentation is planned to go into the Kobweb site (linked just above) but it isn't done yet.
 
-I think there's enough there now to let you do almost anything you'd want to do, as either Kobweb supports it or you can
+I think there's enough here now to let you do almost anything you'd want to do, as either Kobweb supports it or you can
 escape hatch to underlying Compose HTML / Kotlin/JS approaches, but there might be some areas where it's still a bit
 DIY. It would be great to get real-world experience to hear what issues users are actually running into.
+
+In general, please understand that we are still pre-1.0, and as such, there is an expectation that you'll be a little
+more tolerant to occasional API migrations, unlike if you were using a more stable library.
+
+We strive hard to ensure that any code we deprecate is kept around for *at least* 6 months, but after that, we are
+likely to remove it. This allows our very lean team to stay nimble as we focus on getting to a 1.0 release.
 
 So, should you use Kobweb at this point? If you are...
 
